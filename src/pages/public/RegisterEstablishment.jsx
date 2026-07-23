@@ -41,6 +41,7 @@ export default function RegisterEstablishment() {
   const MAX_IMAGES = 10;
   const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5 Mo
   const [images, setImages] = useState([]); // File[]
+  const [submitError, setSubmitError] = useState(null);
 
   function update(field, value) {
     setForm((f) => ({ ...f, [field]: value }));
@@ -79,21 +80,27 @@ export default function RegisterEstablishment() {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    setError(null);
+    setSubmitError(null);
 
     if (!captchaToken) {
-      setError("Merci de confirmer que vous n'êtes pas un robot.");
+      setSubmitError("Merci de confirmer que vous n'êtes pas un robot.");
       return;
     }
     if (!acceptTerms) {
-      setError("Merci d'accepter les conditions du contrat.");
+      setSubmitError("Merci d'accepter les conditions du contrat.");
+      return;
+    }
+    if (!form.nom.trim() || !form.prenom.trim() || !form.telephone.trim() || !form.email.trim() || !form.motDePasse.trim()) {
+      setSubmitError("Merci de remplir tous les champs.");
+      return;
+    }
+    if (!form.typeEtablissement || !form.wilaya || !form.ville || !form.adresse.trim() || !form.nomEtablissement.trim()) {
+      setSubmitError("Merci de remplir toutes les informations de l'établissement.");
       return;
     }
 
     setLoading(true);
     try {
-      // FormData car on joint des fichiers (photos de l'etablissement, 10 max).
-      // "etablissement" est envoye en JSON stringifie, le backend le parse.
       const fd = new FormData();
       fd.append("nom", form.nom);
       fd.append("prenom", form.prenom);
@@ -117,7 +124,7 @@ export default function RegisterEstablishment() {
       if (user.role === "owner") navigate("/partenaire");
       else navigate("/mes-reservations");
     } catch (err) {
-      setError(err.response?.data?.message || "Inscription impossible.");
+      setSubmitError(err.response?.data?.message || "Inscription impossible.");
     } finally {
       setLoading(false);
     }
@@ -332,6 +339,8 @@ export default function RegisterEstablishment() {
             conditions du contrat
           </Link>
         </label>
+
+        {submitError && <p className="mt-3 text-sm text-red-600">{submitError}</p>}
 
         {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
 

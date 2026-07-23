@@ -35,7 +35,9 @@ export default function DateField({ value, onChange, className = "", placeholder
   function handleChange(e) {
     const raw = e.target.value.replace(/\D/g, "").slice(0, 8);
     setDigits(raw);
-    onChange(digitsToISO(raw));
+    if (raw.length === 8) {
+      onChange(digitsToISO(raw));
+    }
   }
 
   return (

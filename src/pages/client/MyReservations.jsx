@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { myReservations, cancelReservation } from "../../api/reservations";
 import StatusBadge from "../../components/StatusBadge";
+import { useConfirmDialog } from "../../hooks/useConfirmDialog";
 
 export default function MyReservations() {
   const [reservations, setReservations] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { confirm, Dialog } = useConfirmDialog();
 
   function load() {
     setLoading(true);
@@ -16,7 +18,14 @@ export default function MyReservations() {
   useEffect(load, []);
 
   async function handleCancel(id) {
-    if (!confirm("Annuler cette réservation ?")) return;
+    const ok = await confirm({
+      title: "Annuler la réservation",
+      message: "Voulez-vous vraiment annuler cette réservation ?",
+      confirmText: "Oui, annuler",
+      cancelText: "Non",
+      danger: true,
+    });
+    if (!ok) return;
     await cancelReservation(id);
     load();
   }
@@ -59,6 +68,7 @@ export default function MyReservations() {
           </div>
         ))}
       </div>
+      <Dialog />
     </div>
   );
 }

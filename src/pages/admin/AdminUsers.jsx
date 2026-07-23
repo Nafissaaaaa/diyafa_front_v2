@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { listUsers, updateUserStatus } from "../../api/admin";
+import { useConfirmDialog } from "../../hooks/useConfirmDialog";
 
 export default function AdminUsers() {
   const [role, setRole] = useState("");
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { confirm, Dialog } = useConfirmDialog();
 
   function load() {
     setLoading(true);
@@ -15,7 +17,14 @@ export default function AdminUsers() {
 
   async function toggleStatus(user) {
     const next = user.statut === "actif" ? "bloque" : "actif";
-    if (!confirm(`${next === "bloque" ? "Bloquer" : "Débloquer"} ${user.prenom} ${user.nom} ?`)) return;
+    const ok = await confirm({
+      title: next === "bloque" ? "Bloquer" : "Débloquer",
+      message: `Voulez-vous vraiment ${next === "bloque" ? "bloquer" : "débloquer"} ${user.prenom} ${user.nom} ?`,
+      confirmText: next === "bloque" ? "Bloquer" : "Débloquer",
+      cancelText: "Annuler",
+      danger: next === "bloque",
+    });
+    if (!ok) return;
     await updateUserStatus(user.id, next);
     load();
   }
@@ -52,6 +61,9 @@ export default function AdminUsers() {
             {loading && (
               <tr><td colSpan={6} className="p-5 text-slate-400">Chargement...</td></tr>
             )}
+            {!loading && users.length === 0 && (
+              <tr><td colSpan={6} className="p-5 text-slate-400">Aucun utilisateur trouvé.</td></tr>
+            )}
             {!loading && users.map((u) => (
               <tr key={u.id} className="border-t border-neutral-100">
                 <td className="px-5 py-3 font-semibold text-navy-deep">{u.prenom} {u.nom}</td>
@@ -79,6 +91,7 @@ export default function AdminUsers() {
             ))}
           </tbody>
         </table>
+        <Dialog />
       </div>
     </div>
   );

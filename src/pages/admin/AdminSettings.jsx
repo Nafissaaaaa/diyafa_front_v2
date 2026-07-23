@@ -5,14 +5,20 @@ import PasswordInput from "../../components/PasswordInput";
 export default function AdminSettings() {
   const { user, updateProfile } = useAuth();
 
-  const [email, setEmail] = useState(user?.email || "");
-  const [emailStatus, setEmailStatus] = useState(null); // { type: "success"|"error", message }
+  const [email, setEmail] = useState(() => user?.email || "");
+  const [emailStatus, setEmailStatus] = useState(null);
   const [emailLoading, setEmailLoading] = useState(false);
 
   const [motDePasse, setMotDePasse] = useState("");
   const [confirmation, setConfirmation] = useState("");
   const [pwdStatus, setPwdStatus] = useState(null);
   const [pwdLoading, setPwdLoading] = useState(false);
+
+  useEffect(() => {
+    if (user?.email && user.email !== email) {
+      setEmail(user.email);
+    }
+  }, [user?.email]);
 
   const inputClass =
     "w-full rounded-lg border border-neutral-200 px-3 py-2.5 text-sm focus:border-navy-deep focus:outline-none";

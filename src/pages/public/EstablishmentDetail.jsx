@@ -47,6 +47,11 @@ export default function EstablishmentDetail() {
       return;
     }
 
+    if (dateDebut >= dateFin) {
+      setFeedback({ type: "error", text: "La date de départ doit être après la date d'arrivée." });
+      return;
+    }
+
     try {
       setSubmitting(true);
       await createReservation({
@@ -79,7 +84,7 @@ export default function EstablishmentDetail() {
     <div className="mx-auto max-w-5xl px-6 py-12">
       <div className="mb-3 h-64 overflow-hidden rounded-2xl bg-gradient-to-br from-navy to-navy-deep">
         {activeImage && (
-          <img src={toAssetUrl(activeImage)} alt={establishment.nom} className="h-full w-full object-cover" />
+          <img src={toAssetUrl(activeImage)} alt={establishment.nom} className="h-full w-full object-cover" onError={(e) => { e.target.style.display = "none"; }} />
         )}
       </div>
 
@@ -93,7 +98,7 @@ export default function EstablishmentDetail() {
                 activeImage === img ? "border-gold" : "border-transparent"
               }`}
             >
-              <img src={toAssetUrl(img)} alt="" className="h-full w-full object-cover" />
+              <img src={toAssetUrl(img)} alt="" className="h-full w-full object-cover" onError={(e) => { e.target.style.display = "none"; }} />
             </button>
           ))}
         </div>

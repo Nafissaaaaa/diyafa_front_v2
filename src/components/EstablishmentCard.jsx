@@ -22,6 +22,7 @@ export default function EstablishmentCard({ establishment }) {
             src={toAssetUrl(cover)}
             alt={establishment.nom}
             className="absolute inset-0 h-full w-full object-cover"
+            onError={(e) => { e.target.style.display = "none"; }}
           />
         )}
         <span className="absolute left-3 top-3 rounded-full bg-white/90 px-3 py-1 text-xs font-bold uppercase text-navy-deep">

@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import * as authApi from "../api/auth";
+import { storageGet, storageSet, storageRemove } from "../utils/storage";
 
 const AuthContext = createContext(null);
 
@@ -9,18 +10,22 @@ export function AuthProvider({ children }) {
 
   // Au chargement de l'app, on verifie s'il y a deja une session valide
   useEffect(() => {
-    const stored = localStorage.getItem("diyafa_user");
-    const token = localStorage.getItem("diyafa_token");
+    const stored = storageGet("diyafa_user");
+    const token = storageGet("diyafa_token");
     if (stored && token) {
-      setUser(JSON.parse(stored));
+      try {
+        setUser(JSON.parse(stored));
+      } catch {
+        storageRemove("diyafa_user");
+      }
     }
     setLoading(false);
   }, []);
 
   async function login(identifiant, motDePasse, captchaToken) {
     const data = await authApi.login(identifiant, motDePasse, captchaToken);
-    localStorage.setItem("diyafa_token", data.token);
-    localStorage.setItem("diyafa_user", JSON.stringify(data.user));
+    storageSet("diyafa_token", data.token);
+    storageSet("diyafa_user", JSON.stringify(data.user));
     setUser(data.user);
     return data.user;
   }
@@ -33,8 +38,8 @@ export function AuthProvider({ children }) {
     const data = isPartnerPayload
       ? await authApi.registerPartner(payload)
       : await authApi.registerClient(payload);
-    localStorage.setItem("diyafa_token", data.token);
-    localStorage.setItem("diyafa_user", JSON.stringify(data.user));
+    storageSet("diyafa_token", data.token);
+    storageSet("diyafa_user", JSON.stringify(data.user));
     setUser(data.user);
     return data.user;
   }
@@ -42,14 +47,14 @@ export function AuthProvider({ children }) {
   async function updateProfile(payload) {
     const data = await authApi.updateProfile(payload);
     const updatedUser = data.user || data;
-    localStorage.setItem("diyafa_user", JSON.stringify(updatedUser));
+    storageSet("diyafa_user", JSON.stringify(updatedUser));
     setUser(updatedUser);
     return updatedUser;
   }
 
   function logout() {
-    localStorage.removeItem("diyafa_token");
-    localStorage.removeItem("diyafa_user");
+    storageRemove("diyafa_token");
+    storageRemove("diyafa_user");
     setUser(null);
   }
 

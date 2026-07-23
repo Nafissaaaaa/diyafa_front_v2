@@ -6,6 +6,7 @@ import {
   deleteRoom,
 } from "../../api/establishments";
 import StatusBadge from "../../components/StatusBadge";
+import { useConfirmDialog } from "../../hooks/useConfirmDialog";
 
 export default function OwnerEstablishment() {
   const [establishments, setEstablishments] = useState([]);
@@ -15,6 +16,9 @@ export default function OwnerEstablishment() {
     nom: "", type: "hotel", wilaya: "", ville: "", adresse: "", description: "",
   });
   const [roomForms, setRoomForms] = useState({});
+  const [error, setError] = useState(null);
+  const [creating, setCreating] = useState(false);
+  const { confirm, Dialog } = useConfirmDialog();
 
   function load() {
     setLoading(true);
@@ -25,27 +29,47 @@ export default function OwnerEstablishment() {
 
   async function handleCreateEstablishment(e) {
     e.preventDefault();
-    await createEstablishment(form);
-    setShowForm(false);
-    setForm({ nom: "", type: "hotel", wilaya: "", ville: "", adresse: "", description: "" });
-    load();
+    setError(null);
+    setCreating(true);
+    try {
+      await createEstablishment(form);
+      setShowForm(false);
+      setForm({ nom: "", type: "hotel", wilaya: "", ville: "", adresse: "", description: "" });
+      load();
+    } catch (err) {
+      setError(err.response?.data?.message || "Impossible de créer l'établissement.");
+    } finally {
+      setCreating(false);
+    }
   }
 
   async function handleAddRoom(establishmentId) {
+    setError(null);
     const data = roomForms[establishmentId] || {};
     if (!data.nomType || !data.prixNuit) return;
-    await createRoom(establishmentId, {
-      nomType: data.nomType,
-      prixNuit: data.prixNuit,
-      capacite: data.capacite || 1,
-      nbDisponible: data.nbDisponible || 1,
-    });
-    setRoomForms((f) => ({ ...f, [establishmentId]: {} }));
-    load();
+    try {
+      await createRoom(establishmentId, {
+        nomType: data.nomType,
+        prixNuit: data.prixNuit,
+        capacite: data.capacite || 1,
+        nbDisponible: data.nbDisponible || 1,
+      });
+      setRoomForms((f) => ({ ...f, [establishmentId]: {} }));
+      load();
+    } catch (err) {
+      setError(err.response?.data?.message || "Impossible d'ajouter la chambre.");
+    }
   }
 
   async function handleDeleteRoom(roomId) {
-    if (!confirm("Supprimer cette chambre/place ?")) return;
+    const ok = await confirm({
+      title: "Supprimer cette chambre/place ?",
+      message: "Cette action est irréversible.",
+      confirmText: "Supprimer",
+      cancelText: "Annuler",
+      danger: true,
+    });
+    if (!ok) return;
     await deleteRoom(roomId);
     load();
   }
@@ -61,6 +85,8 @@ export default function OwnerEstablishment() {
           + Nouvel établissement
         </button>
       </div>
+
+      {error && <p className="mb-4 text-sm text-red-600">{error}</p>}
 
       {showForm && (
         <form
@@ -110,8 +136,8 @@ export default function OwnerEstablishment() {
             className="col-span-2 rounded-lg border border-neutral-200 px-3 py-2 text-sm"
             rows={3}
           />
-          <button className="col-span-2 rounded-lg bg-navy-deep py-2.5 text-sm font-semibold text-white">
-            Créer (en attente de validation admin)
+          <button className="col-span-2 rounded-lg bg-navy-deep py-2.5 text-sm font-semibold text-white hover:opacity-90 disabled:opacity-50" disabled={creating}>
+            {creating ? "Création..." : "Créer (en attente de validation admin)"}
           </button>
         </form>
       )}
@@ -172,6 +198,7 @@ export default function OwnerEstablishment() {
           </div>
         ))}
       </div>
+      <Dialog />
     </div>
   );
 }

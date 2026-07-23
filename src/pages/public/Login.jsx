@@ -26,13 +26,26 @@ export default function Login() {
       return;
     }
 
-    if (!email && !telephone) {
+    if (!email.trim() && !telephone.trim()) {
       setError("Merci de renseigner votre email ou votre numéro de téléphone.");
       return;
     }
 
-    // On envoie l'email s'il est rempli, sinon le numero (avec indicatif) ;
-    // le backend detecte automatiquement lequel des deux a ete fourni.
+    if (email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+      setError("Format d'email invalide.");
+      return;
+    }
+
+    if (telephone.trim() && telephone.trim().length < 8) {
+      setError("Numéro de téléphone trop court.");
+      return;
+    }
+
+    if (!motDePasse) {
+      setError("Merci de saisir votre mot de passe.");
+      return;
+    }
+
     const identifiant = email.trim() ? email.trim() : `${indicatif}${telephone}`;
 
     setLoading(true);

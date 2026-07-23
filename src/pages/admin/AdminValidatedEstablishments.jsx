@@ -48,7 +48,7 @@ export default function AdminValidatedEstablishments() {
               <div className="flex items-center gap-3">
                 <div className="h-14 w-14 flex-shrink-0 overflow-hidden rounded-lg bg-neutral-100">
                   {cover ? (
-                    <img src={toAssetUrl(cover)} alt="" className="h-full w-full object-cover" />
+                    <img src={toAssetUrl(cover)} alt="" className="h-full w-full object-cover" onError={(e) => { e.target.style.display = "none"; }} />
                   ) : (
                     <div className="flex h-full w-full items-center justify-center text-xs text-slate-300">—</div>
                   )}

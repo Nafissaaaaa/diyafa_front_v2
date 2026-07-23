@@ -65,7 +65,7 @@ function ImagesModal({ establishment, onClose, onSaved }) {
                     isSelected ? "border-gold ring-2 ring-gold/40" : "border-transparent hover:border-neutral-200"
                   }`}
                 >
-                  <img src={toAssetUrl(img)} alt="" className="h-full w-full object-cover" />
+                  <img src={toAssetUrl(img)} alt="" className="h-full w-full object-cover" onError={(e) => { e.target.style.display = "none"; }} />
                   {isSelected && (
                     <span className="absolute right-1.5 top-1.5 flex h-6 w-6 items-center justify-center rounded-full bg-gold text-xs font-bold text-navy-deep shadow">
                       ★

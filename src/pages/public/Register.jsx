@@ -34,8 +34,23 @@ export default function Register() {
       return;
     }
 
-    if (!form.telephone.trim()) {
-      setError("Merci de renseigner votre numéro de téléphone.");
+    if (!form.nom.trim() || !form.prenom.trim()) {
+      setError("Merci de renseigner votre nom et prénom.");
+      return;
+    }
+
+    if (!form.telephone.trim() || form.telephone.trim().length < 8) {
+      setError("Numéro de téléphone invalide.");
+      return;
+    }
+
+    if (!form.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) {
+      setError("Format d'email invalide.");
+      return;
+    }
+
+    if (!form.motDePasse || form.motDePasse.length < 8) {
+      setError("Le mot de passe doit contenir au moins 8 caractères.");
       return;
     }
 
@@ -73,12 +88,14 @@ export default function Register() {
       <div className="rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm sm:p-8">
         <button
           type="button"
-          className="flex w-full items-center justify-center gap-2.5 rounded-lg bg-[#DB4437] py-3 text-sm font-semibold text-white hover:opacity-90"
+          disabled
+          className="flex w-full items-center justify-center gap-2.5 rounded-lg bg-neutral-100 py-3 text-sm font-semibold text-slate-400 cursor-not-allowed"
+          title="Connexion avec Google bientôt disponible"
         >
           <span className="flex h-6 w-6 items-center justify-center rounded-full bg-white">
             <GoogleIcon className="h-4 w-4" />
           </span>
-          Se connecter avec Google
+          Connexion avec Google (bientôt disponible)
         </button>
 
         <div className="my-5 flex items-center gap-3">

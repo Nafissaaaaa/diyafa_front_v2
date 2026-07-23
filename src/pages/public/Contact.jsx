@@ -3,6 +3,7 @@ import { useState } from "react";
 export default function Contact() {
   const [form, setForm] = useState({ nom: "", email: "", sujet: "", message: "" });
   const [sent, setSent] = useState(false);
+  const [error, setError] = useState(null);
 
   function update(field, value) {
     setForm((f) => ({ ...f, [field]: value }));
@@ -10,8 +11,15 @@ export default function Contact() {
 
   function handleSubmit(e) {
     e.preventDefault();
-    // TODO: brancher sur un endpoint backend (ex: POST /api/contact) une fois disponible.
+    setSent(false);
+    setError(null);
+    if (!form.nom.trim() || !form.email.trim() || !form.sujet.trim() || !form.message.trim()) {
+      setError("Merci de remplir tous les champs.");
+      return;
+    }
+    setError(null);
     setSent(true);
+    setTimeout(() => setSent(false), 8000);
   }
 
   return (
@@ -80,6 +88,12 @@ export default function Contact() {
               required
             />
           </div>
+
+          {error && (
+            <p className="rounded-xl bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
+              {error}
+            </p>
+          )}
 
           {sent && (
             <p className="rounded-xl bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700">

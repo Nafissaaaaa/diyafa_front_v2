@@ -4,6 +4,7 @@ import { useAuth } from "../../context/AuthContext";
 import { myReservations, cancelReservation } from "../../api/reservations";
 import StatusBadge from "../../components/StatusBadge";
 import PasswordInput from "../../components/PasswordInput";
+import { useConfirmDialog } from "../../hooks/useConfirmDialog";
 
 function ProfileTab() {
   const { user, updateProfile } = useAuth();
@@ -110,6 +111,7 @@ function ProfileTab() {
 function ReservationsTab() {
   const [reservations, setReservations] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { confirm, Dialog } = useConfirmDialog();
 
   function load() {
     setLoading(true);
@@ -121,7 +123,14 @@ function ReservationsTab() {
   useEffect(load, []);
 
   async function handleCancel(id) {
-    if (!confirm("Annuler cette réservation ?")) return;
+    const ok = await confirm({
+      title: "Annuler la réservation",
+      message: "Voulez-vous vraiment annuler cette réservation ?",
+      confirmText: "Oui, annuler",
+      cancelText: "Non",
+      danger: true,
+    });
+    if (!ok) return;
     await cancelReservation(id);
     load();
   }
@@ -208,6 +217,7 @@ export default function MyAccount() {
       </div>
 
       {tab === "profil" ? <ProfileTab /> : <ReservationsTab />}
+      <Dialog />
     </div>
   );
 }

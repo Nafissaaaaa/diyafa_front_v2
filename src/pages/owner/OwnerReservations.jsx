@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { ownerReservations, acceptReservation, rejectReservation } from "../../api/reservations";
 import StatusBadge from "../../components/StatusBadge";
+import { usePromptDialog } from "../../hooks/useConfirmDialog";
 
 const FILTERS = [
   { value: "", label: "Toutes" },
@@ -13,6 +14,7 @@ export default function OwnerReservations() {
   const [filter, setFilter] = useState("");
   const [reservations, setReservations] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { prompt, Dialog } = usePromptDialog();
 
   function load() {
     setLoading(true);
@@ -29,8 +31,13 @@ export default function OwnerReservations() {
   }
 
   async function handleReject(id) {
-    const motif = prompt("Motif du refus (optionnel) :") || undefined;
-    await rejectReservation(id, motif);
+    const motif = await prompt({
+      title: "Refuser la réservation",
+      message: "Motif du refus (optionnel) :",
+      placeholder: "Ex: Dates non disponibles",
+    });
+    if (motif === undefined) return;
+    await rejectReservation(id, motif || undefined);
     load();
   }
 
@@ -94,6 +101,7 @@ export default function OwnerReservations() {
           </div>
         ))}
       </div>
+      <Dialog />
     </div>
   );
 }

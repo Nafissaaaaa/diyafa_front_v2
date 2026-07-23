@@ -1,6 +1,13 @@
 import axios from "axios";
+import { storageGet } from "../utils/storage";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+const API_URL = (() => {
+  const envUrl = import.meta.env.VITE_API_URL;
+  if (!envUrl || typeof envUrl !== "string" || envUrl.trim() === "") {
+    throw new Error("VITE_API_URL environment variable is not set.");
+  }
+  return envUrl.replace(/\/+$/, "");
+})();
 
 // Base pour les fichiers statiques (photos uploadees) : meme host que l'API,
 // mais sans le suffixe "/api". Ex: http://localhost:5000
@@ -21,7 +28,7 @@ const apiClient = axios.create({
 
 // Injecte automatiquement le token JWT stocke apres connexion
 apiClient.interceptors.request.use((config) => {
-  const token = localStorage.getItem("diyafa_token");
+  const token = storageGet("diyafa_token");
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
@@ -33,8 +40,8 @@ apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response && error.response.status === 401) {
-      localStorage.removeItem("diyafa_token");
-      localStorage.removeItem("diyafa_user");
+      storageRemove("diyafa_token");
+      storageRemove("diyafa_user");
       if (window.location.pathname !== "/connexion") {
         window.location.href = "/connexion";
       }
