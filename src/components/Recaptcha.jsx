@@ -2,8 +2,7 @@ import { forwardRef } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
 
 const SITE_KEY =
-  import.meta.env.VITE_RECAPTCHA_SITE_KEY ||
-  "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI";
+  import.meta.env.VITE_RECAPTCHA_SITE_KEY;
 
 const Recaptcha = forwardRef(function Recaptcha({ onChange, className = "" }, ref) {
   return (
