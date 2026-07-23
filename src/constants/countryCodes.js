@@ -1,0 +1,23 @@
+// Algérie en premier (public cible principal), puis reste du monde par ordre alphabétique.
+export const COUNTRY_CODES = [
+  { iso: "DZ", flag: "🇩🇿", code: "+213", label: "Algérie" },
+  { iso: "MA", flag: "🇲🇦", code: "+212", label: "Maroc" },
+  { iso: "TN", flag: "🇹🇳", code: "+216", label: "Tunisie" },
+  { iso: "LY", flag: "🇱🇾", code: "+218", label: "Libye" },
+  { iso: "EG", flag: "🇪🇬", code: "+20", label: "Égypte" },
+  { iso: "MR", flag: "🇲🇷", code: "+222", label: "Mauritanie" },
+  { iso: "SA", flag: "🇸🇦", code: "+966", label: "Arabie Saoudite" },
+  { iso: "AE", flag: "🇦🇪", code: "+971", label: "Émirats arabes unis" },
+  { iso: "QA", flag: "🇶🇦", code: "+974", label: "Qatar" },
+  { iso: "TR", flag: "🇹🇷", code: "+90", label: "Turquie" },
+  { iso: "FR", flag: "🇫🇷", code: "+33", label: "France" },
+  { iso: "BE", flag: "🇧🇪", code: "+32", label: "Belgique" },
+  { iso: "CH", flag: "🇨🇭", code: "+41", label: "Suisse" },
+  { iso: "DE", flag: "🇩🇪", code: "+49", label: "Allemagne" },
+  { iso: "ES", flag: "🇪🇸", code: "+34", label: "Espagne" },
+  { iso: "IT", flag: "🇮🇹", code: "+39", label: "Italie" },
+  { iso: "NL", flag: "🇳🇱", code: "+31", label: "Pays-Bas" },
+  { iso: "GB", flag: "🇬🇧", code: "+44", label: "Royaume-Uni" },
+  { iso: "CA", flag: "🇨🇦", code: "+1", label: "Canada" },
+  { iso: "US", flag: "🇺🇸", code: "+1", label: "États-Unis" },
+];
