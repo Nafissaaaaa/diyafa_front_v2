@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 import Logo from "./Logo";
-import PaymentBadges from "./PaymentBadges";
 
 const DESTINATIONS_POPULAIRES = ["Alger", "Oran", "Annaba", "Constantine"];
 
@@ -113,8 +112,11 @@ function IconInstagram({ className = "h-4 w-4" }) {
 function IconYoutube({ className = "h-4 w-4" }) {
   return (
     <svg viewBox="0 0 24 24" fill="none" className={className}>
-      <rect x="2.5" y="6" width="19" height="12" rx="3.5" stroke="currentColor" strokeWidth="1.6" />
-      <path d="M10.5 9.5v5l4.3-2.5-4.3-2.5Z" fill="currentColor" />
+      <path
+        d="M21.6 7.6a2.7 2.7 0 0 0-1.9-1.9C18 5.2 12 5.2 12 5.2s-6 0-7.7.5A2.7 2.7 0 0 0 2.4 7.6 28 28 0 0 0 2 12a28 28 0 0 0 .4 4.4 2.7 2.7 0 0 0 1.9 1.9c1.7.5 7.7.5 7.7.5s6 0 7.7-.5a2.7 2.7 0 0 0 1.9-1.9A28 28 0 0 0 22 12a28 28 0 0 0-.4-4.4Z"
+        fill="currentColor"
+      />
+      <path d="M10 9.3v5.4l4.6-2.7L10 9.3Z" fill="#0B1023" />
     </svg>
   );
 }
@@ -212,7 +214,7 @@ export default function Footer() {
               <a
                 href="#"
                 aria-label="YouTube"
-                className="flex h-8 w-8 items-center justify-center rounded-full border border-red-500/40 bg-red-600/90 text-white hover:bg-red-600"
+                className="flex h-8 w-8 items-center justify-center rounded-full border border-white/15 hover:border-gold hover:text-gold"
               >
                 <IconYoutube />
               </a>
@@ -222,10 +224,6 @@ export default function Footer() {
 
         <div className="flex flex-col items-center gap-6 border-t border-white/10 pt-8">
           <Logo className="h-8" withText dark />
-          <div>
-            <p className="mb-2 text-center text-xs uppercase tracking-wide text-white/40">Paiement sécurisé</p>
-            <PaymentBadges />
-          </div>
           <p className="text-center text-xs text-white/40">
             © {new Date().getFullYear()} Diyafa — Plateforme de réservation d'hôtels et de dortoirs en Algérie.
           </p>
