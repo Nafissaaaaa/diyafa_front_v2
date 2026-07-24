@@ -44,11 +44,6 @@ export default function Register() {
       return;
     }
 
-    if (!form.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) {
-      setError("Format d'email invalide.");
-      return;
-    }
-
     if (!form.motDePasse || form.motDePasse.length < 8) {
       setError("Le mot de passe doit contenir au moins 8 caractères.");
       return;

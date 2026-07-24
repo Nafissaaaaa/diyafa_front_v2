@@ -52,6 +52,11 @@ export default function EstablishmentDetail() {
       return;
     }
 
+    if (nbPersonnes < 1) {
+      setFeedback({ type: "error", text: "Le nombre de voyageurs doit être d'au moins 1." });
+      return;
+    }
+
     try {
       setSubmitting(true);
       await createReservation({

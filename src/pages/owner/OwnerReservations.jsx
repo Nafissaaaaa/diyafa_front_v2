@@ -14,6 +14,7 @@ export default function OwnerReservations() {
   const [filter, setFilter] = useState("");
   const [reservations, setReservations] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const { prompt, Dialog } = usePromptDialog();
 
   function load() {
@@ -26,19 +27,29 @@ export default function OwnerReservations() {
   useEffect(load, [filter]);
 
   async function handleAccept(id) {
-    await acceptReservation(id);
-    load();
+    setError(null);
+    try {
+      await acceptReservation(id);
+      load();
+    } catch (err) {
+      setError(err.response?.data?.message || "Impossible d'accepter la réservation.");
+    }
   }
 
   async function handleReject(id) {
+    setError(null);
     const motif = await prompt({
       title: "Refuser la réservation",
       message: "Motif du refus (optionnel) :",
       placeholder: "Ex: Dates non disponibles",
     });
     if (motif === undefined) return;
-    await rejectReservation(id, motif || undefined);
-    load();
+    try {
+      await rejectReservation(id, motif || undefined);
+      load();
+    } catch (err) {
+      setError(err.response?.data?.message || "Impossible de refuser la réservation.");
+    }
   }
 
   return (
@@ -59,6 +70,8 @@ export default function OwnerReservations() {
           ))}
         </div>
       </div>
+
+      {error && <p className="mb-4 text-sm text-red-600">{error}</p>}
 
       <div className="rounded-2xl border border-neutral-200 bg-white">
         {loading && <p className="p-5 text-slate-400">Chargement...</p>}

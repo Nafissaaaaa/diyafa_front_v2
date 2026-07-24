@@ -19,6 +19,17 @@ function ProfileTab() {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
 
+  useEffect(() => {
+    if (user) {
+      setForm({
+        nom: user.nom || "",
+        prenom: user.prenom || "",
+        email: user.email || "",
+        telephone: user.telephone || "",
+      });
+    }
+  }, [user?.id, user?.email]);
+
   function update(field, value) {
     setForm((f) => ({ ...f, [field]: value }));
     setSuccess(false);
@@ -131,8 +142,12 @@ function ReservationsTab() {
       danger: true,
     });
     if (!ok) return;
-    await cancelReservation(id);
-    load();
+    try {
+      await cancelReservation(id);
+      load();
+    } catch (err) {
+      setError(err.response?.data?.message || "Impossible d'annuler la réservation.");
+    }
   }
 
   return (

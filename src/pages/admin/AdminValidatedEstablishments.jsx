@@ -5,11 +5,13 @@ import { toAssetUrl } from "../../api/client";
 export default function AdminValidatedEstablishments() {
   const [list, setList] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [confirming, setConfirming] = useState(null); // etablissement en attente de confirmation
+  const [confirming, setConfirming] = useState(null);
   const [deletingId, setDeletingId] = useState(null);
+  const [error, setError] = useState(null);
 
   function load() {
     setLoading(true);
+    setError(null);
     listValidatedEstablishments()
       .then(setList)
       .finally(() => setLoading(false));
@@ -23,6 +25,8 @@ export default function AdminValidatedEstablishments() {
       await deleteEstablishmentByAdmin(id);
       setConfirming(null);
       load();
+    } catch (err) {
+      setError(err.response?.data?.message || "Impossible de supprimer l'établissement.");
     } finally {
       setDeletingId(null);
     }
@@ -34,6 +38,8 @@ export default function AdminValidatedEstablishments() {
         <h1 className="mb-1 font-display text-2xl font-semibold text-navy-deep">Établissements validés</h1>
         <p className="text-sm text-slate-500">Tous les établissements actuellement en ligne sur Diyafa.</p>
       </div>
+
+      {error && <p className="mb-4 text-sm text-red-600">{error}</p>}
 
       <div className="rounded-2xl border border-neutral-200 bg-white">
         {loading && <p className="p-5 text-slate-400">Chargement...</p>}

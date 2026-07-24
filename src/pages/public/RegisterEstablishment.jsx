@@ -91,11 +91,23 @@ export default function RegisterEstablishment() {
       return;
     }
     if (!form.nom.trim() || !form.prenom.trim() || !form.telephone.trim() || !form.email.trim() || !form.motDePasse.trim()) {
-      setSubmitError("Merci de remplir tous les champs.");
+      setSubmitError("Merci de remplir tous les champs du compte.");
       return;
     }
     if (!form.typeEtablissement || !form.wilaya || !form.ville || !form.adresse.trim() || !form.nomEtablissement.trim()) {
       setSubmitError("Merci de remplir toutes les informations de l'établissement.");
+      return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) {
+      setSubmitError("Format d'email invalide.");
+      return;
+    }
+    if (!/^\+?\d{8,15}$/.test(form.telephone.replace(/\s/g, ""))) {
+      setSubmitError("Numéro de téléphone invalide (8 à 15 chiffres).");
+      return;
+    }
+    if (form.motDePasse.length < 8) {
+      setSubmitError("Le mot de passe doit contenir au moins 8 caractères.");
       return;
     }
 

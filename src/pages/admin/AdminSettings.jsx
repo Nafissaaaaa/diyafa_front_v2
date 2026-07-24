@@ -27,13 +27,22 @@ export default function AdminSettings() {
   async function handleEmailSubmit(e) {
     e.preventDefault();
     setEmailStatus(null);
-    if (email === user?.email) {
+    const trimmed = email.trim();
+    if (!trimmed) {
+      setEmailStatus({ type: "error", message: "Email requis." });
+      return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
+      setEmailStatus({ type: "error", message: "Format d'email invalide." });
+      return;
+    }
+    if (trimmed === user?.email) {
       setEmailStatus({ type: "error", message: "Cet email est déjà le vôtre." });
       return;
     }
     setEmailLoading(true);
     try {
-      await updateProfile({ email });
+      await updateProfile({ email: trimmed });
       setEmailStatus({ type: "success", message: "Email mis à jour." });
     } catch (err) {
       setEmailStatus({ type: "error", message: err.response?.data?.message || "Impossible de mettre à jour l'email." });
@@ -47,6 +56,10 @@ export default function AdminSettings() {
     setPwdStatus(null);
     if (motDePasse !== confirmation) {
       setPwdStatus({ type: "error", message: "Les deux mots de passe ne correspondent pas." });
+      return;
+    }
+    if (motDePasse.length < 8) {
+      setPwdStatus({ type: "error", message: "Le mot de passe doit contenir au moins 8 caractères." });
       return;
     }
     setPwdLoading(true);

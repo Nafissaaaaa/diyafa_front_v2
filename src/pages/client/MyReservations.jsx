@@ -6,6 +6,7 @@ import { useConfirmDialog } from "../../hooks/useConfirmDialog";
 export default function MyReservations() {
   const [reservations, setReservations] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const { confirm, Dialog } = useConfirmDialog();
 
   function load() {
@@ -26,13 +27,19 @@ export default function MyReservations() {
       danger: true,
     });
     if (!ok) return;
-    await cancelReservation(id);
-    load();
+    try {
+      await cancelReservation(id);
+      load();
+    } catch (err) {
+      setError(err.response?.data?.message || "Impossible d'annuler la réservation.");
+    }
   }
 
   return (
     <div className="mx-auto max-w-4xl px-6 py-12">
       <h1 className="mb-8 font-display text-2xl font-semibold text-navy-deep">Mes réservations</h1>
+
+      {error && <p className="mb-4 text-sm text-red-600">{error}</p>}
 
       {loading && <p className="text-slate-400">Chargement...</p>}
       {!loading && reservations.length === 0 && (
