@@ -1,6 +1,7 @@
+import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useState, useEffect, useRef } from "react";
 import { useAuth } from "../context/AuthContext";
+import { useI18n } from "../context/I18nContext";
 import Logo from "./Logo";
 
 const LANGUAGES = [
@@ -10,8 +11,7 @@ const LANGUAGES = [
 ];
 
 function LanguageSwitcher() {
-  // Purement visuel pour l'instant — le vrai systeme de traduction (FR/AR/EN + RTL) sera branche ensuite.
-  const [lang, setLang] = useState("fr");
+  const { lang, setLang } = useI18n();
   const [open, setOpen] = useState(false);
 
   const current = LANGUAGES.find((l) => l.code === lang);
@@ -64,6 +64,7 @@ function LanguageSwitcher() {
 }
 
 function RegisterDropdown() {
+  const { t } = useI18n();
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
 
@@ -84,7 +85,7 @@ function RegisterDropdown() {
         onClick={() => setOpen((o) => !o)}
         className="flex items-center gap-1 rounded-full bg-gold px-4 py-2 text-sm font-semibold text-navy-deep hover:opacity-90"
       >
-        Inscription
+        {t("register")}
         <svg
           width="12"
           height="12"
@@ -107,7 +108,7 @@ function RegisterDropdown() {
               <circle cx="12" cy="8" r="3.5" stroke="currentColor" strokeWidth="1.8" />
               <path d="M5 20c1.5-4 4.3-6 7-6s5.5 2 7 6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
             </svg>
-            Client
+            {t("registerAsClient")}
           </Link>
           <Link
             to="/inscription/etablissement"
@@ -118,7 +119,7 @@ function RegisterDropdown() {
               <rect x="5" y="4" width="14" height="16" rx="1.5" stroke="currentColor" strokeWidth="1.8" />
               <path d="M9 8h1M14 8h1M9 12h1M14 12h1M9 16h6" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
             </svg>
-            Établissement
+            {t("registerAsEstablishment")}
           </Link>
         </div>
       )}
@@ -128,6 +129,7 @@ function RegisterDropdown() {
 
 export default function Navbar() {
   const { user, logout } = useAuth();
+  const { t } = useI18n();
   const navigate = useNavigate();
 
   function handleLogout() {
@@ -139,7 +141,7 @@ export default function Navbar() {
     if (!user) return null;
     if (user.role === "admin") return "/admin";
     if (user.role === "owner") return "/partenaire";
-    return "/mes-reservations";
+    return "/mon-compte";
   }
 
   return (
@@ -150,11 +152,12 @@ export default function Navbar() {
         </Link>
 
         <nav className="hidden items-center gap-7 text-sm font-medium text-slate-500 lg:flex">
-          <Link to="/recherche?type=hotel" className="hover:text-navy">Hôtels</Link>
-          <Link to="/recherche?type=mraqed" className="hover:text-navy">Dortoirs</Link>
+          <Link to="/recherche?type=hotel" className="hover:text-navy">{t("hotels")}</Link>
+          <Link to="/recherche?type=mraqed" className="hover:text-navy">{t("dorms")}</Link>
+          <Link to="/recherche?type=maison" className="hover:text-navy">{t("houses")}</Link>
           <span className="h-4 w-px bg-neutral-200" />
-          <Link to="/contact" className="hover:text-navy">Contact</Link>
-          <Link to="/partenaire/etablissement" className="hover:text-navy">Ajoutez votre établissement</Link>
+          <Link to="/inscription/etablissement" className="hover:text-navy">{t("addYourEstablishment")}</Link>
+          <Link to="/contact" className="hover:text-navy">{t("contact")}</Link>
         </nav>
 
         <div className="flex items-center gap-3">
@@ -166,13 +169,13 @@ export default function Navbar() {
                 to={dashboardLink()}
                 className="rounded-full border border-neutral-200 px-4 py-2 text-sm font-semibold text-navy-deep hover:border-navy-deep"
               >
-                {user.role === "admin" ? "Admin" : user.role === "owner" ? "Mon espace" : "Mon compte"}
+                {user.role === "admin" ? t("admin") : user.role === "owner" ? t("mySpace") : t("myAccount")}
               </Link>
               <button
                 onClick={handleLogout}
                 className="rounded-full bg-navy-deep px-4 py-2 text-sm font-semibold text-white hover:opacity-90"
               >
-                Déconnexion
+                {t("logout")}
               </button>
             </>
           ) : (
@@ -181,7 +184,7 @@ export default function Navbar() {
                 to="/connexion"
                 className="rounded-full border border-neutral-200 px-4 py-2 text-sm font-semibold text-navy-deep hover:border-navy-deep"
               >
-                Se connecter
+                {t("login")}
               </Link>
               <RegisterDropdown />
             </>
